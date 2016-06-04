@@ -2,32 +2,39 @@ package shopstyle.example;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Optional;
 
 public class IntegerStackTest {
 
+    private Stack<Integer> stack;
+
+    @Before
+    public void setup(){
+        stack = new IntegerStack();
+    }
+
     @Test
     public void testIsEmptyWhenEmpty() {
-        Stack<Integer> stack = new IntegerStack();
         assertTrue("stack should be empty", stack.isEmpty());
     }
 
     @Test
     public void testIsEmptyWhenNonEmpty() {
-        Stack<Integer> stack = new IntegerStack();
         stack.push(0);
         assertFalse("should not be empty", stack.isEmpty());
     }
 
     @Test
     public void testPeekWhenEmpty() {
-        Stack<Integer> stack = new IntegerStack();
         assertFalse("should return an empty optional", stack.peek().isPresent());
     }
 
     @Test
     public void testPeekWhenNonEmpty() {
-        Stack<Integer> stack = new IntegerStack();
         stack.push(0);
         assertEquals("should return the most recently pushed entry", Integer.valueOf(0),
                 stack.peek().get());
@@ -35,20 +42,18 @@ public class IntegerStackTest {
 
     @Test
     public void testPeekNonMutating() {
-        Stack<Integer> stack = new IntegerStack();
         stack.push(0);
+        stack.peek();
         assertFalse("peek should not mutate the stack", stack.isEmpty());
     }
 
     @Test
     public void testPopWhenEmpty() {
-        Stack<Integer> stack = new IntegerStack();
         assertFalse("should return an empty optional", stack.pop().isPresent());
     }
 
     @Test
     public void testPopWhenNonEmpty() {
-        Stack<Integer> stack = new IntegerStack();
         stack.push(0);
         assertEquals("should return the most recently pushed entry", Integer.valueOf(0),
                 stack.pop().get());
@@ -56,9 +61,26 @@ public class IntegerStackTest {
 
     @Test
     public void testPopRemovesEntry() {
-        Stack<Integer> stack = new IntegerStack();
         stack.push(0);
         stack.pop();
         assertTrue("pop should remove an entry", stack.isEmpty());
     }
+
+    @Test
+    public void pushHappyPath() {
+        stack.push(0);
+        assertFalse("push should add an entry", stack.isEmpty());
+    }
+
+
+    @Test (expected = IllegalArgumentException.class)
+    public void pushExceedsCapacity() {
+        int size = 2;
+        stack = new IntegerStack(size);
+        for (int i=0; i<= size; i++){
+            stack.push(i);
+        }
+    }
+
+
 }
